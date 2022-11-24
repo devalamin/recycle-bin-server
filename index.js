@@ -29,17 +29,26 @@ async function run() {
     try {
         const categoriesCollection = client.db('recyclebindb').collection('categories');
         const productsCollection = client.db('recyclebindb').collection('products');
+        const purchasedProductsCollection = client.db('recyclebindb').collection('purchased_products');
 
         app.get('/categories', async (req, res) => {
             const query = {}
             const categories = await categoriesCollection.find(query).toArray()
             res.send(categories)
         });
-        app.get('/category/:brandname', async (req, res) => {
-            const brand = req.params.brandname;
-            const query = { brandsName: brand }
+
+
+        app.get('/category/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { category_id: id }
             const products = await productsCollection.find(query).toArray();
             res.send(products);
+        });
+
+        app.post('/purchasedproducts', async (req, res) => {
+            const purchasedproducts = req.body;
+            const result = await purchasedProductsCollection.insertOne(purchasedproducts);
+            res.send(result)
         });
 
 
