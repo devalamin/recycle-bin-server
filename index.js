@@ -1,9 +1,11 @@
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
+require('dotenv').config()
+
 const port = process.env.PORT || 5000;
 
-require('dotenv').config()
 
 const app = express();
 
@@ -46,11 +48,29 @@ async function run() {
             res.send(products);
         });
 
+        app.get('/purchasedproducts', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email }
+            const products = await purchasedProductsCollection.find(query).toArray()
+            res.send(products)
+        })
+
         app.post('/purchasedproducts', async (req, res) => {
             const purchasedproducts = req.body;
             const result = await purchasedProductsCollection.insertOne(purchasedproducts);
             res.send(result);
         });
+
+        app.get('/jwt', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email }
+            const user = await allUsersCollection.find(query).toArray()
+            if (user) {
+                const token = jwt.sign({ email }, process.env.SECRET_TOKEN, { expiresIn: '5d' })
+                return res.send({ accessToken: token })
+            }
+            res.status(403).send({ message: 'unauthorized' })
+        })
 
         app.post('/users', async (req, res) => {
             const user = req.body;
@@ -69,10 +89,6 @@ async function run() {
 run().catch(error => console.error(error))
 
 
-
-app.get('/categories/:products', async (req, res) => {
-
-})
 
 app.listen(port, () => {
     console.log('server is running on', port);
