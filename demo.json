@@ -1,0 +1,86 @@
+[
+    {
+        "brandsName": "Tesla",
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaigeQA_yhiUdfxJW66UusOOMd0uzooM_-OfbpkB6FXFiiB9Ij80xRwTb_WfNOKAuNDsc&usqp=CAU",
+        "items": [
+            {
+                "model": "Tesla 201",
+                "condition": "Used",
+                "resale-price": 135,
+                "original-price": 435,
+                "picture": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaigeQA_yhiUdfxJW66UusOOMd0uzooM_-OfbpkB6FXFiiB9Ij80xRwTb_WfNOKAuNDsc&usqp=CAU",
+                "using-duration": "2",
+                "location": "Dhaka",
+                "seller-name": "Rahim Cars Collection",
+                "seller-status": "verified"
+            },
+            {
+                "model": "Tesla 425",
+                "condition": "Used",
+                "resale-price": 145,
+                "original-price": 835,
+                "picture": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToFKJfcpShNp-xCCkyiYscBbOitEKQtz4SDQ&usqp=CAU",
+                "using-duration": "3",
+                "location": "Chittagong",
+                "seller-name": "Speed Cars",
+                "seller-status": ""
+            }
+        ]
+    },
+    {
+        "brandsName": "BMW",
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToFKJfcpShNp-xCCkyiYscBbOitEKQtz4SDQ&usqp=CAU",
+        "items": [
+            {
+                "model": "BMW Generation421",
+                "condition": "Used",
+                "resale-price": 452,
+                "original-price": 956,
+                "picture": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTR4vFsdZFqC65qGq4cnpn9Tg8iC9Zz4p_3kFN6TyCNh336MU6dnMQPDkksx-DtT0NlEvA&usqp=CAU",
+                "using-duration": "4",
+                "location": "Khulna",
+                "seller-name": "Shine Cars",
+                "seller-status": "verified"
+            },
+            {
+                "model": "BMW 1997",
+                "condition": "Used",
+                "resale-price": 585,
+                "original-price": 789,
+                "picture": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9TkYO-N00TeMpYHmwLd3g_wvUti2HFtWx8yp3JyLyR17-yJR5OwxB3m4VOXNIOgCY3QQ&usqp=CAU",
+                "using-duration": "4",
+                "location": "Dhaka",
+                "seller-name": "Mirpur Car House",
+                "seller-status": ""
+            }
+        ]
+    },
+    {
+        "brandsName": "Mercedes Benz",
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_tFF0xZk_30Dg_FlKTKZ9FMOmH8c9zHkYOA&usqp=CAU",
+        "items": [
+            {
+                "model": "AMG A35",
+                "condition": "Used",
+                "resale-price": 456,
+                "original-price": 989,
+                "picture": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzdHl0Ql6ks9_h3k5IH9FTwGpSu25Mo_QAPA&usqp=CAU",
+                "using-duration": "5",
+                "location": "Barishal",
+                "seller-name": "Bismillah Car Shop",
+                "seller-status": ""
+            },
+            {
+                "model": "Benz E-Class",
+                "condition": "Used",
+                "resale-price": 365,
+                "original-price": 789,
+                "picture": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8XBP1Zb5zDQXg7zj7bteGSeLNz-aItKTKMA&usqp=CAU",
+                "using-duration": "4",
+                "location": "Dhaka",
+                "seller-name": "Your Cars.com",
+                "seller-status": "verified"
+            }
+        ]
+    }
+]
