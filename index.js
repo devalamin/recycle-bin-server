@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
@@ -68,11 +68,26 @@ async function run() {
             res.send(products);
         });
 
+        app.get('/dashboard/myproducts', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email }
+            const result = await productsCollection.find(query).toArray();
+            res.send(result)
+        })
+
         app.post('/dashboard/addingproducts', async (req, res) => {
             const product = req.body;
             const result = await productsCollection.insertOne(product);
             res.send(result)
+        });
+
+        app.delete('/dashboard/products/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await productsCollection.deleteOne(query);
+            res.send(result)
         })
+
 
         app.get('/purchasedproducts', verifyJWT, async (req, res) => {
             const email = req.query.email;
@@ -98,7 +113,7 @@ async function run() {
             if (user) {
                 const token = jwt.sign({ email }, process.env.SECRET_TOKEN, { expiresIn: '5d' })
                 return res.send({ accessToken: token })
-            }
+            };
             res.status(403).send({ message: 'unauthorized' })
         });
 
