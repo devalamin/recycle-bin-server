@@ -27,6 +27,26 @@ const uri = `mongodb+srv://${process.env.DB_USER_RECYCLE}:${process.env.DB_PASSW
 
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
+
+async function verifyJWT(req, res, next) {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+        return res.status(401).send({ message: 'unauthorized' })
+    }
+    const token = authHeader.split(' ')[1]
+    jwt.verify(token, process.env.SECRET_TOKEN, function (err, decoded) {
+        if (err) {
+            res.status(401).send({ message: 'unauthorized access' })
+        }
+        req.decoded = decoded;
+        next();
+    })
+
+}
+
+
+
 async function run() {
     try {
         const categoriesCollection = client.db('recyclebindb').collection('categories');
@@ -50,6 +70,10 @@ async function run() {
 
         app.get('/purchasedproducts', async (req, res) => {
             const email = req.query.email;
+            // const decodedEmail = req.decoded.email;
+            // if (email !== decodedEmail) {
+            //     return res.status(403).send({ message: 'Forbidden access' })
+            // }
             const query = { email: email }
             const products = await purchasedProductsCollection.find(query).toArray()
             res.send(products)
@@ -70,15 +94,20 @@ async function run() {
                 return res.send({ accessToken: token })
             }
             res.status(403).send({ message: 'unauthorized' })
+        });
+
+
+        app.get('/users', async (req, res) => {
+            const filter = {}
+            const users = await allUsersCollection.find(filter).toArray();
+            res.send(users)
         })
 
         app.post('/users', async (req, res) => {
             const user = req.body;
             const result = await allUsersCollection.insertOne(user)
             res.send(result)
-        })
-
-
+        });
 
     }
     finally {
