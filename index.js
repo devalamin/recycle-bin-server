@@ -53,6 +53,7 @@ async function run() {
         const productsCollection = client.db('recyclebindb').collection('products');
         const purchasedProductsCollection = client.db('recyclebindb').collection('purchased_products');
         const allUsersCollection = client.db('recyclebindb').collection('allUsers');
+        const reportedProductsCollection = client.db('recyclebindb').collection('reported');
 
         app.get('/categories', async (req, res) => {
             const query = {}
@@ -154,6 +155,12 @@ async function run() {
         app.post('/users', async (req, res) => {
             const user = req.body;
             const result = await allUsersCollection.insertOne(user)
+            res.send(result)
+        });
+
+        app.post('/reported', async (req, res) => {
+            const product = req.body;
+            const result = await reportedProductsCollection.insertOne(product)
             res.send(result)
         });
 
