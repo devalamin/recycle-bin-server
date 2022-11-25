@@ -68,6 +68,12 @@ async function run() {
             res.send(products);
         });
 
+        app.post('/dashboard/addingproducts', async (req, res) => {
+            const product = req.body;
+            const result = await productsCollection.insertOne(product);
+            res.send(result)
+        })
+
         app.get('/purchasedproducts', verifyJWT, async (req, res) => {
             const email = req.query.email;
             const decodedEmail = req.decoded.email;
@@ -77,7 +83,7 @@ async function run() {
             const query = { email: email }
             const products = await purchasedProductsCollection.find(query).toArray()
             res.send(products)
-        })
+        });
 
         app.post('/purchasedproducts', async (req, res) => {
             const purchasedproducts = req.body;
