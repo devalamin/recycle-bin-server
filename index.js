@@ -74,7 +74,7 @@ async function run() {
             const query = { adstatus: adstatus };
             const result = await productsCollection.find(query).limit(3).toArray()
             res.send(result)
-        })
+        });
 
         app.get('/dashboard/myproducts', async (req, res) => {
             const email = req.query.email;
@@ -110,12 +110,12 @@ async function run() {
         });
 
 
-        app.get('/purchasedproducts', verifyJWT, async (req, res) => {
+        app.get('/purchasedproducts', async (req, res) => {
             const email = req.query.email;
-            const decodedEmail = req.decoded.email;
-            if (email !== decodedEmail) {
-                return res.status(403).send({ message: 'Forbidden access' })
-            }
+            // const decodedEmail = req.decoded.email;
+            // if (email !== decodedEmail) {
+            //     return res.status(403).send({ message: 'Forbidden access' })
+            // }
             const query = { email: email }
             const products = await purchasedProductsCollection.find(query).toArray()
             res.send(products)
@@ -132,7 +132,7 @@ async function run() {
             const query = { email: email }
             const user = await allUsersCollection.find(query).toArray()
             if (user) {
-                const token = jwt.sign({ email }, process.env.SECRET_TOKEN, { expiresIn: '5d' })
+                const token = jwt.sign({ email }, process.env.SECRET_TOKEN, { expiresIn: '30d' })
                 return res.send({ accessToken: token })
             };
             res.status(403).send({ message: 'unauthorized' })
@@ -151,6 +151,19 @@ async function run() {
             const result = await allUsersCollection.findOne(query);
             res.send(result)
         });
+
+        app.get('/selleraccount', async (req, res) => {
+            const query = { account_type: 'seller' }
+            const result = await allUsersCollection.find(query).toArray()
+            res.send(result)
+        });
+
+        app.delete('/sellerdelete/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await allUsersCollection.deleteOne(query)
+            res.send(result)
+        })
 
         app.post('/users', async (req, res) => {
             const user = req.body;
