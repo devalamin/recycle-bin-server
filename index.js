@@ -68,6 +68,13 @@ async function run() {
             res.send(products);
         });
 
+        app.get('/advertisment', async (req, res) => {
+            const adstatus = 'forAdvertise'
+            const query = { adstatus: adstatus };
+            const result = await productsCollection.find(query).limit(3).toArray()
+            res.send(result)
+        })
+
         app.get('/dashboard/myproducts', async (req, res) => {
             const email = req.query.email;
             const query = { email: email }
@@ -81,12 +88,25 @@ async function run() {
             res.send(result)
         });
 
+        app.put('/dashboard/advertise/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const options = { upsert: true }
+            const updatedDoc = {
+                $set: {
+                    adstatus: 'forAdvertise'
+                }
+            }
+            const result = await productsCollection.updateOne(query, updatedDoc, options)
+            res.send(result);
+        });
+
         app.delete('/dashboard/products/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
             const result = await productsCollection.deleteOne(query);
             res.send(result)
-        })
+        });
 
 
         app.get('/purchasedproducts', verifyJWT, async (req, res) => {
