@@ -1,9 +1,12 @@
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId, Transaction } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const e = require('express');
 require('dotenv').config()
+
+const stripe = require("stripe")(process.env.STRIPE_SECRETE);
+
 
 const port = process.env.PORT || 5000;
 
@@ -72,6 +75,7 @@ async function run() {
         const purchasedProductsCollection = client.db('recyclebindb').collection('purchased_products');
         const allUsersCollection = client.db('recyclebindb').collection('allUsers');
         const reportedProductsCollection = client.db('recyclebindb').collection('reported');
+        const paymentsCollection = client.db('recyclebindb').collection('payment');
 
         app.get('/categories', async (req, res) => {
             const query = {}
@@ -136,11 +140,54 @@ async function run() {
             res.send(products)
         });
 
+        app.get('/purchased/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const product = await purchasedProductsCollection.findOne(query)
+            res.send(product)
+        })
+
+
         app.post('/purchasedproducts', async (req, res) => {
             const purchasedproducts = req.body;
             const result = await purchasedProductsCollection.insertOne(purchasedproducts);
             res.send(result);
         });
+
+        app.post('/create-payment-intent', async (req, res) => {
+            const product = req.body;
+            const price = product.productPrice;
+            const amount = price * 100
+
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount: amount,
+                currency: 'usd',
+                "payment_method_types": [
+                    "card"
+                ],
+            })
+            res.send({
+                clientSecret: paymentIntent.client_secret,
+            });
+        });
+
+        app.post('/payments', async (req, res) => {
+            const payment = req.body;
+            const result = await paymentsCollection.insertOne(payment)
+
+            const id = payment.bookingId
+            const query = { _id: ObjectId(id) }
+            const updatedDoc = {
+                $set: {
+                    paid: true,
+                    transactionId: payment.transactionID
+                }
+            }
+
+            const updatedInfo = await purchasedProductsCollection.updateOne(query, updatedDoc)
+
+            res.send(result)
+        })
 
         app.get('/jwt', async (req, res) => {
             const email = req.query.email;
