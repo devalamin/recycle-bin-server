@@ -167,6 +167,19 @@ async function run() {
             res.send(result)
         });
 
+        app.get('/buyeraccount', async (req, res) => {
+            const query = { account_type: 'buyer' }
+            const result = await allUsersCollection.find(query).toArray()
+            res.send(result)
+        });
+
+        app.delete('/buyerdelete/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await allUsersCollection.deleteOne(query)
+            res.send(result)
+        });
+
         app.get('/selleraccount', async (req, res) => {
             const query = { account_type: 'seller' }
             const result = await allUsersCollection.find(query).toArray()
@@ -178,7 +191,7 @@ async function run() {
             const query = { _id: ObjectId(id) }
             const result = await allUsersCollection.deleteOne(query)
             res.send(result)
-        })
+        });
 
         app.post('/users', async (req, res) => {
             const user = req.body;
@@ -204,7 +217,7 @@ async function run() {
             const query = { _id: ObjectId(id) }
             const result = await reportedProductsCollection.deleteOne(query)
             res.send(result)
-        })
+        });
 
     }
     finally {
