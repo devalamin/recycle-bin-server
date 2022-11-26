@@ -2,6 +2,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+const e = require('express');
 require('dotenv').config()
 
 const port = process.env.PORT || 5000;
@@ -28,22 +29,39 @@ const uri = `mongodb+srv://${process.env.DB_USER_RECYCLE}:${process.env.DB_PASSW
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
-async function verifyJWT(req, res, next) {
+function verifyJWT(req, res, next) {
     const authHeader = req.headers.authorization;
-
     if (!authHeader) {
-        return res.status(401).send({ message: 'unauthorized' })
+        return res.status(401).send({ message: unauthorized })
+
     }
+
     const token = authHeader.split(' ')[1]
     jwt.verify(token, process.env.SECRET_TOKEN, function (err, decoded) {
         if (err) {
-            res.status(401).send({ message: 'unauthorized access' })
+            return res.status(403).send({ message: 'forbidden' })
         }
         req.decoded = decoded;
-        next();
+        next()
     })
-
 }
+
+// function verifyJWT(req, res, next) {
+//     const authHeader = req.headers.authorization;
+
+//     if (!authHeader) {
+//         return res.status(401).send({ message: 'unauthorized' })
+//     }
+//     const token = authHeader.split(' ')[1]
+//     jwt.verify(token, process.env.SECRET_TOKEN, function (err, decoded) {
+//         if (err) {
+//             res.status(401).send({ message: 'unauthorized access' })
+//         }
+//         req.decoded = decoded;
+//         next();
+//     })
+
+// }
 
 
 
@@ -78,6 +96,7 @@ async function run() {
 
         app.get('/dashboard/myproducts', async (req, res) => {
             const email = req.query.email;
+
             const query = { email: email }
             const result = await productsCollection.find(query).toArray();
             res.send(result)
@@ -112,10 +131,6 @@ async function run() {
 
         app.get('/purchasedproducts', async (req, res) => {
             const email = req.query.email;
-            // const decodedEmail = req.decoded.email;
-            // if (email !== decodedEmail) {
-            //     return res.status(403).send({ message: 'Forbidden access' })
-            // }
             const query = { email: email }
             const products = await purchasedProductsCollection.find(query).toArray()
             res.send(products)
@@ -171,11 +186,25 @@ async function run() {
             res.send(result)
         });
 
+        app.get('/reported', async (req, res) => {
+            const query = {}
+            const result = await reportedProductsCollection.find(query).toArray()
+            res.send(result)
+        });
+
         app.post('/reported', async (req, res) => {
             const product = req.body;
             const result = await reportedProductsCollection.insertOne(product)
             res.send(result)
         });
+
+        app.delete('/reported/:id', async (req, res) => {
+            const id = req.params.id
+            console.log(id);
+            const query = { _id: id }
+            const result = await reportedProductsCollection.deleteOne(query)
+            res.send(result)
+        })
 
     }
     finally {
